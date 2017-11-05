@@ -11,7 +11,7 @@ module.exports = function(server) {
 	var router = server.loopback.Router();
 
 	var Users = app.models.Users;
-	// var Users = app.models.Assets;
+	var Assets = app.models.Assets;
 	var i = {
 		receiver : "54e8d2ca-250f-4750-800a-1478e767f83a"
 	};

@@ -5,37 +5,37 @@ module.exports = function(app) {
 	  if (err) throw err;
 	  
 	  app.models.Users.create([{
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
 	    }, {
-	      userId: guid(),
+	      userId: helpers.guid(),
 			lastDevice : "Iphone",
 			contact : "u@ca.ca",
 			createdOn : helpers.currentTime()
@@ -50,22 +50,22 @@ module.exports = function(app) {
 	  if (err) throw err;
 	  
 	  app.models.Assets.create([{
-		  	id: guid(),
-		  	receiver : guid(),
+		  	id: helpers.guid(),
+		  	receiver : helpers.guid(),
 		  	owner : "u@ca.ca",
 			createdOn : helpers.currentTime(),
 			receiverName: "Uchi",
 			receiverContact: "3068399303"
 	    },{
-		  	id: guid(),
-		  	receiver : guid(),
+		  	id: helpers.guid(),
+		  	receiver : helpers.guid(),
 		  	owner : "u@ca.ca",
 			createdOn : helpers.currentTime(),
 			receiverName: "Uchi",
 			receiverContact: "3068399303"
 	    },{
-		  	id: guid(),
-		  	receiver : guid(),
+		  	id: helpers.guid(),
+		  	receiver : helpers.guid(),
 		  	owner : "u@ca.ca",
 			createdOn : helpers.currentTime(),
 			receiverName: "Uchi",
@@ -79,19 +79,3 @@ module.exports = function(app) {
 	});
 };
 
-function S4() {
-	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-}
-
-function guid() {
-	var num = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase() + "";
-	console.log(num);
-	return num;
-}
-
-function asset() {
-	var id = guid();
-	var access = {};
-	access[id] = [S4()];
-	return access;
-}
