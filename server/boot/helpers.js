@@ -17,49 +17,41 @@ exports.helpers = {
 		}
 	},
 	x : [727272, 2202002, 2022020],
-	jsonFromSMS : function(sms, sender) {
+	jsonFromSMS : function(body) {
+		var sms = body.Body;
+		var sender = body.From;
+
 		var textParts = sms.split(/\s+/);
 		var input = {};
 		var msg;
 
 		// TEXT FORMAT
 		// TO GIVE ACCESS: give asset to userName  with contact <Number/Email>
-		// TO CANCEL ACCESS: take asset from userName and alert with contact <Number/Email>
+		// TO CANCEL ACCESS: take asset from userName with contact <Number/Email>
 		// TO CHECK IF HAVE ACCESS: does userName have asset and alert <Number>
 		switch(textParts[0].toLowerCase()) {
 		case "give":
 			input = {
 				action : "give",
+				contact : sender,
 				owner : sender,
-				receiver : textParts[1],
-				assetId : textParts[2],
-				validity : (function() {
-					if (textParts.length > 3) {
-						if (textParts[textParts.length - 1].toLowerCase().includes("day")) {
-							var today = new Date();
-							if (!isNaN(textParts[textParts.length - 2] + 0)) {
-								console.log("is valid");
-								return today.setDate(today.getDate() + textParts[textParts.length - 2] + 0);
-							} else {
-								console.log("is NOT valid");
-								msg = "\n\n-\nREQUEST STATUS:\n" + "ERROR: Send message in format below\n\n" + "give <userName> <assetID>\n" + "OR\n" + "give <userName> <assetID> for <numberOfDays> days";
-							}
-						} else {
-							console.log("long but does not include day");
-							msg = "\n\n-\nREQUEST STATUS:\n" + "ERROR: Send message in format below\n\n" + "give <userName> <assetID>\n" + "OR\n" + "give <userName> <assetID> for <numberOfDays> days";
-						}
-					} else {
-						return "indefinite";
-					}
-				})()
+				createdOn : this.currentTime(),
+				id : textParts[1],
+				receiverName : textParts[3],
+				receiverContact : textParts[5],
+				lastDevice : body.FromCity + " " + body.FromState + " " + body.FromCountry
 			};
 			break;
 		case "take":
 			input = {
 				action : "take",
+				contact : sender,
 				owner : sender,
-				receiver : textParts[3],
-				assetId : textParts[1]
+				createdOn : this.currentTime(),
+				id : textParts[1],
+				receiverName : textParts[3],
+				receiverContact : textParts[5],
+				lastDevice : "Iphone"
 			};
 			break;
 		case "does":
@@ -83,6 +75,14 @@ exports.helpers = {
 	currentTime : function() {
 		var today = new Date();
 		return today.setDate(today.getDate() + 0);
+	},
+	S4: function () {
+		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+	},
+	guid : function () {
+		var num = (this.S4() + this.S4() + "-" + this.S4() + "-4" + this.S4().substr(0, 3) + "-" + this.S4() + "-" + this.S4() + this.S4() + this.S4()).toLowerCase() + "";
+		return num;
 	}
+
 };
 

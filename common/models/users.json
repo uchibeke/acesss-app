@@ -6,26 +6,22 @@
     "validateUpsert": true
   },
   "properties": {
-    "accesses": {
-      "type": "object",
-      "required": true
-    },
     "userId": {
       "type": "string",
       "id": true,
       "required": true
     },
-    "validity": {
-      "type": "string",
-      "required": false
-    },
-    "timeAdded": {
+    "createdOn": {
       "type": "string",
       "required": true
     },
     "contact": {
       "type": "string",
       "required": true
+    },
+    "lastDevice": {
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],

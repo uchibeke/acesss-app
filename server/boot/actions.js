@@ -3,19 +3,19 @@ var app = require('../server');
 var config = require('../../.config');
 var helpers = require('./helpers.js').helpers;
 
-console.log(helpers.x);
+var accountSid = config.twilio.accountSid;
+var authToken = config.twilio.authToken;
 
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 module.exports = function(server) {
-	// Install a `/` route that returns server status
 	var router = server.loopback.Router();
 
 	var Users = app.models.Users;
-	var Users = app.models.Assets;
+	// var Users = app.models.Assets;
 	var i = {
 		receiver : "54e8d2ca-250f-4750-800a-1478e767f83a"
 	};
-	ask(i);
+	// ask(i);
 
 	router.post('/sms', function(req, res) {
 
@@ -35,9 +35,8 @@ module.exports = function(server) {
 		// if text
 
 		if (req.body.Body != undefined) {
-			// req.body.Body = req.body.Body.toString();
 			var sender = req.body.From;
-			var jsonResp = helpers.jsonFromSMS(req.body.Body, sender);
+			var jsonResp = helpers.jsonFromSMS(req.body);
 			action = {
 				type : "sms",
 				inputs : jsonResp.input
@@ -56,10 +55,10 @@ module.exports = function(server) {
 			// {"owner":"9399393993939", "receiver":"28288239399303", "action": "give", assetId: ""}
 		}
 
-		// console.log(action.inputs);
+		console.log(action.inputs);
 
 		doAction(action.inputs);
-		msg = msg ? msg : "\n\n-\nREQUEST STATUS:\n" + action.inputs.receiver + " was given access to " + action.inputs.assetId;
+		msg = msg ? msg : "\n\n-\nREQUEST STATUS:\n" + action.inputs.receiverName + " was given access to " + action.inputs.id;
 		res.writeHead(200, {
 			'Content-Type' : 'text/xml'
 		});
@@ -91,7 +90,7 @@ module.exports = function(server) {
 
 	// Give userID assetID
 	function give(input) {
-		Users.findById(inputs.owner, {
+		Users.findById(input.owner, {
 			limit : 1
 		}, function(err, user) {
 			if (err) {
@@ -99,30 +98,32 @@ module.exports = function(server) {
 			}
 			if (user === null) {
 				Users.create([{
-					userId : input.receiver + "-" + guid(),
-					accesses : asset(input),
-					timeAdded : helpers.currentTime(),
-					contact : input.contact
+					userId : helpers.guid(),
+					createdOn : helpers.currentTime(),
+					contact : input.contact,
+					lastDevice : input.lastDevice
 				}], function(err, user) {
 					if (err) {
 						throw err;
 					}
-					Assets.create([{
-						id : guid(),
-						owner : user.userId,
-						receiver : guid(),
-						receiverName : input.receiver,
-						receiverName : input.receiverContact
-					}], function(err, user) {
-						if (err) {
-							throw err;
-						}
-						console.log("Saved: " + JSON.stringify(user));
-						return user;
-					});
 					console.log("Saved: " + JSON.stringify(user));
+					// Assets.create([{
+						// id : guid(),
+						// owner : user.userId,
+						// receiver : guid(),
+						// receiverName : input.receiver,
+						// receiverName : input.receiverContact
+					// }], function(err, user) {
+						// if (err) {
+							// throw err;
+						// }
+						// console.log("Saved: " + JSON.stringify(user));
+						// return user;
+					// });
 					return user;
 				});
+			} else {
+				
 			}
 			console.log("FOUND:\n");
 			console.log(user);
@@ -144,16 +145,6 @@ module.exports = function(server) {
 			console.log(user);
 		});
 	}
-
-	function S4() {
-		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-	}
-
-	function guid() {
-		var num = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase() + "";
-		return num;
-	}
-
 
 	server.use(router);
 };

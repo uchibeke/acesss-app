@@ -26,6 +26,10 @@
     "receiverContact": {
       "type": "string",
       "required": false
+    },
+    "createdOn": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],
