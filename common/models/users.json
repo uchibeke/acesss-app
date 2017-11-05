@@ -1,0 +1,43 @@
+{
+  "name": "Users",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "accesses": {
+      "type": "object",
+      "required": true
+    },
+    "userId": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "validity": {
+      "type": "string",
+      "required": false
+    },
+    "timeAdded": {
+      "type": "string",
+      "required": true
+    },
+    "contact": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "assets": {
+      "type": "hasMany",
+      "model": "Assets",
+      "foreignKey": "",
+      "options": {
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

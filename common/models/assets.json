@@ -1,0 +1,43 @@
+{
+  "name": "Assets",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "required": true,
+      "id": true
+    },
+    "owner": {
+      "type": "string",
+      "required": true
+    },
+    "receiver": {
+      "type": "string",
+      "required": true
+    },
+    "receiverName": {
+      "type": "string",
+      "required": false
+    },
+    "receiverContact": {
+      "type": "string",
+      "required": false
+    }
+  },
+  "validations": [],
+  "relations": {
+    "users": {
+      "type": "belongsTo",
+      "model": "Users",
+      "foreignKey": "",
+      "options": {
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

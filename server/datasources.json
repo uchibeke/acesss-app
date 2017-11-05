@@ -1,0 +1,17 @@
+{
+  "access-db": {
+    "host": "127.0.0.1",
+    "port": 0,
+    "url": "",
+    "database": "access-app",
+    "password": "ugo000000",
+    "name": "access-db",
+    "user": "root",
+    "connector": "mysql"
+  },
+  "access-mongo-db": {
+    "url": "mongodb://uchi_mlab:Uchi_mlab@ds135522.mlab.com:35522/access-app",
+    "name": "access-mongo-db",
+    "connector": "loopback-connector-mongodb"
+  }
+}
