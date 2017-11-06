@@ -59,10 +59,6 @@ module.exports = function(server) {
 		});
 		twiml.message(msg);
 		res.end(twiml.toString());
-
-		// twiml.message(input.receiver + " could not be given access to "+ input.assetId);
-		// console.log(twiml.toString())
-		// res.end(twiml.toString());
 	});
 
 	function doAction(input) {
@@ -76,13 +72,7 @@ module.exports = function(server) {
 			ask(input);
 		}
 	}
-
-	function asset(i) {
-		var access = {};
-		access[i.owner] = [i.assetId];
-		return access;
-	}
-
+	
 	// Give userID assetID
 	function give(input) {
 		Users.find({

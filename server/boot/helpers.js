@@ -25,9 +25,9 @@ exports.helpers = {
 		var msg;
 
 		// TEXT FORMAT
-		// TO GIVE ACCESS: give asset to userName with contact <Number/Email>
-		// TO CANCEL ACCESS: take asset from userName with contact  <Number/Email>
-		// TO CHECK IF HAVE ACCESS: does userName with contact  <Number/Email> have asset
+		// TO GIVE ACCESS: give assetID to userName with contact <Number/Email>
+		// TO CANCEL ACCESS: take assetID from userName with contact  <Number/Email>
+		// TO CHECK IF HAVE ACCESS: does userName with contact  <Number/Email> have assetID
 		switch(textParts[0].toLowerCase()) {
 		case "give":
 			input = {
