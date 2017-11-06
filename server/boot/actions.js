@@ -24,13 +24,10 @@ module.exports = function(server) {
 			authToken : authToken
 		});
 
-		console.log(req.body);
-
 		var action = {};
 		var input;
 		var sender;
 		var msg;
-		console.log(req.body.Body);
 
 		// if text
 
@@ -55,10 +52,8 @@ module.exports = function(server) {
 			// {"owner":"9399393993939", "receiver":"28288239399303", "action": "give", assetId: ""}
 		}
 
-		console.log(action.inputs);
-
 		doAction(action.inputs);
-		msg = msg ? msg : "\n\n-\nREQUEST STATUS:\n" + action.inputs.receiverName + " was given access to " + action.inputs.id;
+		msg = msg ? msg : "\n\n-\nREQUEST STATUS:\n" + action.inputs.receiverName + " was given access to " + action.inputs.description;
 		res.writeHead(200, {
 			'Content-Type' : 'text/xml'
 		});
@@ -90,13 +85,15 @@ module.exports = function(server) {
 
 	// Give userID assetID
 	function give(input) {
-		Users.findById(input.owner, {
-			limit : 1
-		}, function(err, user) {
+		Users.find({
+			where : {
+				"contact" : input.contact
+			}
+		}, function(err, owner) {
 			if (err) {
 				throw err;
 			}
-			if (user === null) {
+			if (owner.length < 1) {
 				Users.create([{
 					userId : helpers.guid(),
 					createdOn : helpers.currentTime(),
@@ -106,45 +103,75 @@ module.exports = function(server) {
 					if (err) {
 						throw err;
 					}
-					console.log("Saved: " + JSON.stringify(user));
-					// Assets.create([{
-						// id : guid(),
-						// owner : user.userId,
-						// receiver : guid(),
-						// receiverName : input.receiver,
-						// receiverName : input.receiverContact
-					// }], function(err, user) {
-						// if (err) {
-							// throw err;
-						// }
-						// console.log("Saved: " + JSON.stringify(user));
-						// return user;
-					// });
+					console.log("Saved: " + JSON.stringify(user[0]));
+					Assets.create([{
+						id : helpers.guid(),
+						receiver : helpers.guid(),
+						owner : user[0].userId,
+						createdOn : helpers.currentTime(),
+						receiverName : input.receiverName,
+						receiverContact : input.receiverContact,
+						description: input.description
+					}], function(err, asset) {
+						if (err) {
+							throw err;
+						}
+						console.log("Saved: " + JSON.stringify(asset));
+						return asset;
+					});
 					return user;
 				});
 			} else {
-				
+				Assets.create([{
+					id : input.id,
+					receiver : helpers.guid(),
+					owner : owner[0].userId,
+					createdOn : helpers.currentTime(),
+					receiverName : input.receiverName,
+					receiverContact : input.receiverContact,
+					description : input.description
+				}], function(err, asset) {
+					if (err) {
+						throw err;
+					}
+					console.log("Saved: " + JSON.stringify(asset));
+					return asset;
+				});
 			}
 			console.log("FOUND:\n");
-			console.log(user);
+			console.log(owner);
 		});
 	}
 
 	// Does userID have assetID
-	function ask(inputs) {
-		Users.findById(inputs.receiver, {
+	function ask(input) {
+		Users.find({
 			where : {
-				userId : inputs.receiver
-			},
-			limit : 1
+				"contact" : input.contact
+			}
 		}, function(err, user) {
 			if (err) {
 				throw err;
 			}
+			console.log(user)
+			Assets.find({
+				where : {
+					"receiverName" : input.receiverName,
+					"description" : input.description,
+					"owner" : user[0].owner
+				}
+			}, function(err, asset) {
+				if (err) {
+					throw err;
+				}
+				console.log("FOUND:\n");
+				console.log(asset);
+			});
 			console.log("FOUND:\n");
-			console.log(user);
+			console.log(asset);
 		});
 	}
+
 
 	server.use(router);
 };

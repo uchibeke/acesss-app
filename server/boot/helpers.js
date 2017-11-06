@@ -8,7 +8,6 @@ exports.helpers = {
 				} else {
 					// Call the function recursively
 					if (
-					// (keyIn + "").toLowerCase().includes("body")  ||
 					(keyIn + "").toLowerCase().includes("route") || (keyIn + "").toLowerCase().includes("twilio") || (keyIn + "").toLowerCase().includes("data") || (keyIn + "").toLowerCase().includes("payload")) {
 						return "\n\n" + keyIn + ":\n" + JSON.stringify(myJson[keyIn + ""]) + "\n\n" + getValues(myJson[keyIn + ""]);
 					}
@@ -21,14 +20,14 @@ exports.helpers = {
 		var sms = body.Body;
 		var sender = body.From;
 
-		var textParts = sms.split(/\s+/);
+		var textParts = sms.trim().split(/\s+/);
 		var input = {};
 		var msg;
 
 		// TEXT FORMAT
-		// TO GIVE ACCESS: give asset to userName  with contact <Number/Email>
-		// TO CANCEL ACCESS: take asset from userName with contact <Number/Email>
-		// TO CHECK IF HAVE ACCESS: does userName have asset and alert <Number>
+		// TO GIVE ACCESS: give asset to userName with contact <Number/Email>
+		// TO CANCEL ACCESS: take asset from userName with contact  <Number/Email>
+		// TO CHECK IF HAVE ACCESS: does userName with contact  <Number/Email> have asset
 		switch(textParts[0].toLowerCase()) {
 		case "give":
 			input = {
@@ -36,10 +35,11 @@ exports.helpers = {
 				contact : sender,
 				owner : sender,
 				createdOn : this.currentTime(),
-				id : textParts[1],
+				id : this.guid(),
 				receiverName : textParts[3],
-				receiverContact : textParts[5],
-				lastDevice : body.FromCity + " " + body.FromState + " " + body.FromCountry
+				receiverContact : textParts[6],
+				lastDevice : body.FromCity + " " + body.FromState + " " + body.FromCountry,
+				description: textParts[1]
 			};
 			break;
 		case "take":
@@ -48,24 +48,25 @@ exports.helpers = {
 				contact : sender,
 				owner : sender,
 				createdOn : this.currentTime(),
-				id : textParts[1],
+				id : this.guid(),
 				receiverName : textParts[3],
-				receiverContact : textParts[5],
-				lastDevice : "Iphone"
+				receiverContact : textParts[6],
+				lastDevice : "Iphone",
+				description: textParts[1]
 			};
 			break;
 		case "does":
 			input = {
 				action : "ask",
+				contact : sender,
 				owner : sender,
-				receiver : textParts[1],
-				assetId : textParts[3]
+				createdOn : this.currentTime(),
+				id : this.guid(),
+				receiverName : textParts[1],
+				receiverContact : textParts[4],
+				lastDevice : "Iphone",
+				description: textParts[6]
 			};
-			break;
-		default:
-			input = {
-			};
-			return input;
 		}
 		return {
 			input : input,
