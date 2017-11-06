@@ -66,13 +66,13 @@ module.exports = function(server) {
 			give(input);
 		}
 		if (input.action === "take") {
-			take(input);
+			askOrTake(input);
 		}
 		if (input.action === "ask") {
-			ask(input);
+			askOrTake(input);
 		}
 	}
-	
+
 	// Give userID assetID
 	function give(input) {
 		Users.find({
@@ -101,7 +101,7 @@ module.exports = function(server) {
 						createdOn : helpers.currentTime(),
 						receiverName : input.receiverName,
 						receiverContact : input.receiverContact,
-						description: input.description
+						description : input.description
 					}], function(err, asset) {
 						if (err) {
 							throw err;
@@ -134,7 +134,7 @@ module.exports = function(server) {
 	}
 
 	// Does userID have assetID
-	function ask(input) {
+	function askOrTake(input) {
 		Users.find({
 			where : {
 				"contact" : input.contact
@@ -143,25 +143,53 @@ module.exports = function(server) {
 			if (err) {
 				throw err;
 			}
-			console.log(user)
-			Assets.find({
-				where : {
-					"receiverName" : input.receiverName,
-					"description" : input.description,
-					"owner" : user[0].owner
-				}
-			}, function(err, asset) {
-				if (err) {
-					throw err;
-				}
-				console.log("FOUND:\n");
-				console.log(asset);
-			});
-			console.log("FOUND:\n");
-			console.log(asset);
+			if (user.length > 0) {
+				Assets.find({
+					where : {
+						"receiverName" : input.receiverName,
+						"description" : input.description,
+						"owner" : user[0].owner
+					}
+				}, function(err, asset) {
+					if (err) {
+						throw err;
+					}
+					console.log("FOUND:\n");
+					console.log(asset);
+					if (input.action === "take") {
+						Assets.destroyAll({
+							where : {
+							}
+						}, function(err, del) {
+							console.log("DELETED");
+							console.log(del);
+							return del;
+						});
+					}
+					return asset;
+				});
+			} else {
+				return owner;
+			}
 		});
 	}
 
-
+	i = {
+		input : {
+			action : 'take',
+			contact : '+13067155488',
+			owner : '+13067155488',
+			createdOn : 1509932232578,
+			id : 'f82efbc9-d48d-4359-60d0-2a4aa51249e9',
+			receiverName : 'Tim',
+			receiverContact : '30611223333',
+			lastDevice : 'Iphone',
+			description : 'myAsset'
+		},
+		msg : undefined
+	};
+	
+	askOrTake(i.input);
+	
 	server.use(router);
 };
